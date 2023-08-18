@@ -1,0 +1,8 @@
+#!/bin/bash
+
+TMPFILE=$(mktemp)
+trap "rm $TMPFILE" EXIT
+
+screencapture $TMPFILE
+
+tesseract $TMPFILE - | tr " " "\n"
