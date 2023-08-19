@@ -1,21 +1,26 @@
 local M = {}
 
-local logger = hs.logger.new("screencomplete", "debug")
-logger.d("yoooo")
-local eventtap = hs.eventtap
+function M:init()
+  M.logger = hs.logger.new("ScreenWords", "debug")
+  M.chooser = hs.chooser.new(function(selection)
+    if not selection then return end
+    hs.eventtap.keyStrokes(selection.text)
+  end)
+  M.script = hs.spoons.resourcePath("extract-words")
+end
 
-local chooser = hs.chooser.new(function(selection)
-  if not selection then return end
-  eventtap.keyStrokes(selection.text)
-end)
+function M:bindHotKeys(mapping)
+  local spec = {
+    chooseWord = hs.fnutils.partial(self.chooseWord, self)
+  }
+  hs.spoons.bindHotkeysToSpec(spec, mapping)
+  return self
+end
 
-M.run = function()
-  local output, status = hs.execute(
-    "/Users/arvidbjurklint/projects/hammerspoon/screencomplete/screencomplete",
-    true
-  )
+function M:chooseWord()
+  local output, status = hs.execute(M.script, true)
   if not status then
-    logger.e(string.format("command exited with error: %s"), output)
+    M.logger.e(string.format("command exited with error: %s", output))
     return
   end
 
@@ -23,8 +28,8 @@ M.run = function()
   for line in output:gmatch("%S+") do
     table.insert(choices, { text = line })
   end
-  chooser:choices(choices)
-  chooser:show()
+  M.chooser:choices(choices)
+  M.chooser:show()
 end
 
 return M

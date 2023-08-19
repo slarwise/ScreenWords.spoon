@@ -1,11 +1,29 @@
-# Screencomplete
+# ScreenWords.spoon
 
-Get any word from the screen, regardless of application, and insert it
-somewhere.
+A [Hammerspoon](https://github.com/Hammerspoon/hammerspoon) spoon (plugin) that
+extracts all words on screen and lets you choose and input one of them into
+whatever is currently focused. Hammerspoon is an automation software for MacOS.
 
-## Example usage
+TODO: Add image/gif of example usage.
 
-- As a completion source in a text editor: Write something, press the completion
-  key, and get a list of words from the screen starting with the current string
-- Use a hotkey to open a window where you can choose from words on the screen.
-  When selecting a word, insert it where the focus was previously.
+## Installation
+
+Clone this repository into the Spoons directory:
+
+```sh
+mkdir -p ~/.hammerspoon/Spoons
+git clone https://github.com/slarwise/ScreenWords.spoon ~/.hammerspoon/Spoons
+```
+
+## Usage
+
+Add the following to your `~/.hammerspoon/init.lua`:
+
+```lua
+hs.loadSpoon("ScreenWords")
+spoon.ScreenWords:bindHotKeys({
+  chooseWord = { { "cmd", "alt" }, "w" },
+})
+```
+
+Replace the hotkey for `chooseWord` to whatever you prefer.
